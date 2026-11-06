@@ -1,5 +1,7 @@
 pub mod network;
 pub mod potentials;
+pub mod svg;
+pub mod trace;
 pub use network::{Edge, Error, Metrics, Network, Solution, Status};
 pub use potentials::solve;
 pub mod bellman_ford;

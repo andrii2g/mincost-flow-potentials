@@ -106,7 +106,14 @@ fn run() -> Result<(), Box<dyn StdError>> {
     } else {
         serde_json::from_slice::<Network>(&std::fs::read(&target)?)?
     };
+    // Time the untraced solver separately: snapshot allocation and rendering are excluded.
     let solution = solve(&n)?;
+    let (traced, trace) = mincost_flow_potentials::potentials::solve_with_trace(&n)?;
+    if (solution.flow, solution.cost, &solution.edge_flows)
+        != (traced.flow, traced.cost, &traced.edge_flows)
+    {
+        return Err("traced solver mismatch".into());
+    }
     verification::check(&n, &solution)?;
     let reference = bellman_ford::solve(&n)?;
     if (solution.flow, solution.cost) != (reference.flow, reference.cost) {
@@ -120,6 +127,8 @@ fn run() -> Result<(), Box<dyn StdError>> {
         })
     });
     std::fs::create_dir_all(&out)?;
+    mincost_flow_potentials::svg::write_frames(&trace, &out)?;
+    std::fs::write(out.join("trace.json"), serde_json::to_vec_pretty(&trace)?)?;
     std::fs::write(out.join("network.json"), serde_json::to_vec_pretty(&n)?)?;
     std::fs::write(
         out.join("solution.json"),
