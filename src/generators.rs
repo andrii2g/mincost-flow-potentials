@@ -47,8 +47,8 @@ impl Generator {
         let count = self.next() % if tiny { 8 } else { 33 };
         let mut edges = Vec::new();
         for _ in 0..count {
-            let from = self.next() as usize % vertices;
-            let mut to = self.next() as usize % (vertices - 1);
+            let from = (self.next() % vertices as u64) as usize;
+            let mut to = (self.next() % (vertices - 1) as u64) as usize;
             if to >= from {
                 to += 1;
             }
