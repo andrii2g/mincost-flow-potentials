@@ -193,8 +193,7 @@ cargo clippy --locked --all-targets -- -D warnings
 cargo test --locked
 ```
 
-GitHub Actions runs these checks and a seeded verification run on Linux and
-Windows. The implementation is intentionally limited to small educational
+The implementation is intentionally limited to small educational
 networks; it does not implement cost scaling, negative forward costs, flow lower
 bounds, or a production optimization-service API.
 
